@@ -1,0 +1,111 @@
+//Declaration et Initialisation des variables
+var TT = [];
+var posx, poxy, Ini, arenasizeX, arenasizeY, score, bestscore;
+posx = 100;
+posy = 100;
+Loop(-1);
+Ini = 0;
+arenasizeX = 750;
+arenasizeY = 900;
+score = 0;
+bestscore = 0;
+
+//Création d'un prototype d'objet
+
+function Obstacle(posX, posY, movX, movY, sizeX, sizeY) {
+
+  this.pos = {
+    X: posX,
+    Y: posY
+  };
+
+  this.mov = {
+    X: movX,
+    Y: movY
+  };
+
+  this.size = {
+    X: sizeX,
+    Y: sizeY
+  };
+
+  RectanglePlein(posX, posY, sizeX, sizeY, 'black');
+
+}
+
+function draw(c) {
+
+  //Création des obstacles
+  if (Ini == 0) {
+    Ini++;
+    for (var ii = 0; ii < 40; ii = ii + 1) {
+      Xtranslation = Random(2);
+      if (Xtranslation == 0) {
+        Xtranslation = Random(4);
+      } else {
+        Xtranslation = -Random(4);
+      }
+      TT[ii] = new Obstacle(Random(740), 0, Xtranslation, Random(4) + 3, Random(40) + 10, 10);
+    }
+  }
+
+  Initialiser();
+
+  //Affichage du score
+  setCanvasFont('Times_New_Roman', '50px', 'bold');
+  Texte(850, 150, "YOUR SCORE IS:", 'darkblue');
+  Texte(1025, 200, score, 'darkblue');
+  if (score >= bestscore) {
+    bestscore = score;
+  }
+  Texte(850, 250, "YOUR  BEST SCORE IS:", 'darkblue');
+  Texte(1025, 300, bestscore, 'darkblue');
+
+
+
+  //Création de l'arène
+  Rectangle(0, 0, arenasizeX, arenasizeY, 'black');
+
+  //"Joueur"
+  CerclePlein(mouseX, mouseY, 10, 'blue');
+
+  //Update des obstacles
+  for (var jj = 0; jj < TT.length; jj = jj + 1) {
+    newX = TT[jj].pos.X + TT[jj].mov.X;
+    newY = TT[jj].pos.Y + TT[jj].mov.Y;
+    TT[jj] = new Obstacle(newX, newY, TT[jj].mov.X, TT[jj].mov.Y, TT[jj].size.X, TT[jj].size.Y);
+  }
+
+  //Collisions avec obstacles
+  for (var kk = 0; kk < TT.length; kk = kk + 1) {
+    if ((mouseX > TT[kk].pos.X) && (mouseX < TT[kk].pos.X + TT[kk].size.X) && (mouseY > TT[kk].pos.Y) && (mouseY < TT[kk].pos.Y + TT[kk].size.Y)) {
+      score = score - score;
+    }
+  }
+
+  //Sortie du joueur de l'arène
+  if ((mouseX > arenasizeX) || (mouseX < 0) || (mouseY > arenasizeY) || (mouseY < 0)) {
+    score = score - score;
+  }
+
+  //Destruction des obstacles en dehors de l'arène
+  for (var ll = 0; ll < TT.length; ll = ll + 1) {
+    if ((TT[ll].pos.X > arenasizeX) || (TT[ll].pos.X + TT[ll].size.X < 0) || (TT[ll].pos.Y > arenasizeY)) {
+      TT[ll] = 0;
+      score = score + 1;
+    }
+  }
+
+  //Recréation des obstacles détruits
+  for (var mm = 0; mm < TT.length; mm = mm + 1) {
+    if (TT[mm] == 0) {
+      Xtranslation = Random(2);
+      if (Xtranslation == 0) {
+        Xtranslation = Random(4);
+      } else {
+        Xtranslation = -Random(4);
+      }
+      TT[mm] = new Obstacle(Random(740), 0, Xtranslation, Random(4) + 3, Random(40) + 10, 10);
+    }
+  }
+}
