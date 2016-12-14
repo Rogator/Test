@@ -90,8 +90,9 @@ function draw(c) {
   }
 
   //Sortie du joueur de l'arène
-  if ((mouseX > arenasizeX) || (mouseX < 10) || (mouseY > arenasizeY) || (mouseY < 10)) {
+  if ((mouseX > arenasizeX+10) || (mouseX < 10) || (mouseY > arenasizeY+10) || (mouseY < 10)) {
     score = score - score;
+    Texte(900, 350, "GO BACK INSIDE", 'red');
   }
 
   //Destruction des obstacles en dehors de l'arène
